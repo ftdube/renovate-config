@@ -1,0 +1,26 @@
+name: Validate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      # renovate: datasource=npm depName=renovate
+      RENOVATE_VERSION: 44.199.0
+    container:
+      image: node:24.22.2-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # Pinned: an unpinned npx can serve a stale cached Renovate that rejects
+      # newer options (managerFilePatterns needs 38+).
+      - run: npx -y -p "renovate@${RENOVATE_VERSION}" -- renovate-config-validator --strict default.json renovate.json

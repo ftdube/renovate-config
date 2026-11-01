@@ -1,0 +1,252 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Shared Renovate policy: fortnightly batches, a 3-day release age, security fixes at any time, one minor/patch group and one -major group per manager, digests pinned, never automerge. Rationale: decisions.md.",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "America/Toronto",
+  "schedule": [
+    "* * 1,15 * *"
+  ],
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 4,
+  "automerge": false,
+  "labels": [
+    "dependencies"
+  ],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "schedule": [
+      "at any time"
+    ],
+    "minimumReleaseAge": null,
+    "labels": [
+      "dependencies",
+      "security"
+    ],
+    "prConcurrentLimit": 0,
+    "prHourlyLimit": 0
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "A version under a `# renovate: datasource=… depName=…` comment: a plain value (\"v0.7.0\"), or an image reference whose tag, and digest if any, are updated",
+      "managerFilePatterns": [
+        "/\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( extractVersion=(?<extractVersion>\\S+))?( versioning=(?<versioning>\\S+))?\\s+\\w+: \"?(?<currentValue>[^\"\\s:/@]+)\"?\\s",
+        "# renovate: datasource=(?<datasource>docker) depName=(?<depName>\\S+)\\s+\\w+: \"?[^\"\\s:@]+:(?<currentValue>[^\"\\s@]+)(@(?<currentDigest>sha256:[a-f0-9]{64}))?\"?\\s"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "pinDigests": true
+    },
+    {
+      "description": "One minor/patch group per manager, majors in their own -major group, so one breaking major never blocks the safe updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "github-actions"
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "github-actions-major"
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "dockerfile"
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "dockerfile-major"
+    },
+    {
+      "matchManagers": [
+        "docker-compose"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "docker-compose"
+    },
+    {
+      "matchManagers": [
+        "docker-compose"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "docker-compose-major"
+    },
+    {
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "kubernetes"
+    },
+    {
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "kubernetes-major"
+    },
+    {
+      "matchManagers": [
+        "flux"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "flux"
+    },
+    {
+      "matchManagers": [
+        "flux"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "flux-major"
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "npm"
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "npm-major"
+    },
+    {
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "pip"
+    },
+    {
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "pip-major"
+    },
+    {
+      "matchManagers": [
+        "ansible-galaxy"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "ansible-galaxy"
+    },
+    {
+      "matchManagers": [
+        "ansible-galaxy"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "ansible-galaxy-major"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin",
+        "pinDigest"
+      ],
+      "groupName": "tools"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "tools-major"
+    }
+  ]
+}
